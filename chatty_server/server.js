@@ -29,13 +29,14 @@ wss.on('connection', ws => {
   });
 
   ws.on('message', function incoming(message) {
-    const { type, username, content } = JSON.parse(message);
+    const { type, username, content, createdAt } = JSON.parse(message);
     if (type === 'postMessage') {
       let returnMessage = {
         id: uuidv1(),
         type: 'incomingMessage',
         username,
-        content
+        content,
+        createdAt
       };
       wss.clients.forEach(function e(client) {
         // if (client != ws) {
@@ -47,8 +48,8 @@ wss.on('connection', ws => {
       let returnMessage = {
         id: uuidv1(),
         type: 'incomingNotification',
-        username,
-        content
+        content,
+        createdAt
       };
       wss.clients.forEach(function e(client) {
         // if (client != ws) {
