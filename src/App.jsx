@@ -12,7 +12,8 @@ class App extends Component {
       loading: true,
       userInput: '',
       currentUser: { name: '' },
-      clientCount: ''
+      clientCount: '',
+      userColor: ''
     };
 
     this.addCurrentUserHandler = this.addCurrentUserHandler.bind(this);
@@ -22,14 +23,16 @@ class App extends Component {
 
   addCurrentUserHandler(e) {
     console.log(e.target.value);
-    const oldUser = this.state.currentUser.name || 'UNKNOWN USER';
-    const newUser = e.target.value || 'UNKNOWN USER';
+    const oldUser = this.state.currentUser.name || 'Anonymous User';
+    const newUser = e.target.value || 'Anonymous User';
+    console.log('NEW USER:', newUser);
     const updatedUser = { ...this.new, name: newUser };
     if (e.keyCode === 13) {
       this.setState({ currentUser: updatedUser });
       let newNotification = {
         type: 'postNotification',
         content: `**${oldUser}** has changed their name to **${newUser}**.`,
+        userColor: this.state.userColor,
         createdAt: new Date().getTime()
       };
       this.socket.send(JSON.stringify(newNotification));
@@ -51,7 +54,8 @@ class App extends Component {
         //id: e.target.value,
         type: 'postMessage',
         content: e.target.value,
-        username: this.state.currentUser.name,
+        username: this.state.currentUser.name || 'Anonymous User',
+        userColor: this.state.userColor,
         createdAt: new Date().getTime()
       };
       let newMessages = [...this.state.messages, newMessage];
@@ -93,6 +97,12 @@ class App extends Component {
           //let newNotifications = [...this.state.notifications, data];
           console.log(data.count);
           this.setState({ clientCount: data.count });
+          break;
+        case 'userColor':
+          // handle incoming clinet Count
+          //let newNotifications = [...this.state.notifications, data];
+          console.log(data.color);
+          this.setState({ userColor: data.color });
           break;
         default:
           // show an error in the console if the message type is unknown

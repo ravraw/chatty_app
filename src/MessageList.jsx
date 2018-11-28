@@ -15,6 +15,7 @@ export default class MessageList extends Component {
             key={message.id}
             username={message.username}
             content={message.content.toLowerCase()}
+            userColor={message.userColor}
           />
         );
       if (message.type === 'incomingNotification')
@@ -22,6 +23,7 @@ export default class MessageList extends Component {
           <Notification
             key={message.id}
             content={message.content.toLowerCase()}
+            userColor={message.userColor}
           />
         );
     });

@@ -3,6 +3,17 @@ const uuidv1 = require('uuid/v1');
 const express = require('express');
 const SocketServer = require('ws').Server;
 
+// Color
+//const colors = ['#ff9ff3', '#feca57', '#ff6b6b', '#48dbfb'];
+function getRandomColor() {
+  var letters = '0123456789ABCDEF'.split('');
+  var color = '#';
+  for (var i = 0; i < 6; i++) {
+    color += letters[Math.round(Math.random() * 15)];
+  }
+  return color;
+}
+
 // Set the port to 3001
 const PORT = 3001;
 
@@ -25,7 +36,16 @@ wss.on('connection', ws => {
   console.log('One more ---------Client connected');
 
   //ws.on('open', function open() {
-  console.log('working');
+  wss.clients.forEach(function e(client) {
+    //const randomColor =
+    if (client == ws) {
+      client.send(
+        JSON.stringify({ type: 'userColor', color: `${getRandomColor()}` })
+      );
+    }
+  });
+
+  //ws.on('open', function open() {
   wss.clients.forEach(function e(client) {
     // if (client != ws) {
     client.send(
@@ -38,16 +58,19 @@ wss.on('connection', ws => {
   //});
 
   ws.on('message', function incoming(message) {
-    const { type, username, content, createdAt } = JSON.parse(message);
+    const { type, username, content, userColor, createdAt } = JSON.parse(
+      message
+    );
     if (type === 'postMessage') {
       let returnMessage = {
         id: uuidv1(),
         type: 'incomingMessage',
         username,
         content,
+        userColor,
         createdAt
       };
-      client.send(wss.clients.size);
+      //client.send(wss.clients.size);
       wss.clients.forEach(function e(client) {
         // if (client != ws) {
         client.send(JSON.stringify(returnMessage));
@@ -59,6 +82,7 @@ wss.on('connection', ws => {
         id: uuidv1(),
         type: 'incomingNotification',
         content,
+        userColor,
         createdAt
       };
       wss.clients.forEach(function e(client) {
