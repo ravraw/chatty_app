@@ -4,7 +4,7 @@ import Notification from './Notification.jsx';
 
 export default class MessageList extends Component {
   render() {
-    console.log('componentDidMount <NavBar />');
+    // console.log('componentDidMount <NavBar />');
     const messages = this.props.messages;
     const messageArray = messages.map(message => {
       return (

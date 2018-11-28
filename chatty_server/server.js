@@ -1,5 +1,5 @@
 // server.js
-
+const uuidv1 = require('uuid/v1');
 const express = require('express');
 const SocketServer = require('ws').Server;
 
@@ -20,8 +20,43 @@ const wss = new SocketServer({ server });
 // Set up a callback that will run when a client connects to the server
 // When a client connects they are assigned a socket, represented by
 // the ws parameter in the callback.
+
 wss.on('connection', ws => {
-  console.log('Client connected');
+  console.log('One more ---------Client connected');
+
+  ws.on('open', function open() {
+    ws.send('One more client connected !!!');
+  });
+
+  ws.on('message', function incoming(message) {
+    const { type, username, content } = JSON.parse(message);
+    if (type === 'postMessage') {
+      let returnMessage = {
+        id: uuidv1(),
+        type: 'incomingMessage',
+        username,
+        content
+      };
+      wss.clients.forEach(function e(client) {
+        // if (client != ws) {
+        client.send(JSON.stringify(returnMessage));
+        //}
+      });
+    }
+    if (type === 'postNotification') {
+      let returnMessage = {
+        id: uuidv1(),
+        type: 'incomingNotification',
+        username,
+        content
+      };
+      wss.clients.forEach(function e(client) {
+        // if (client != ws) {
+        client.send(JSON.stringify(returnMessage));
+        //}
+      });
+    }
+  });
 
   // Set up a callback for when a client closes the socket. This usually means they closed their browser.
   ws.on('close', () => console.log('Client disconnected'));

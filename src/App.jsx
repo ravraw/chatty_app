@@ -7,22 +7,34 @@ class App extends Component {
   constructor(props) {
     super();
     this.state = {
-      messages: [
-        { id: 1, username: 'Bob', content: 'Has anyone seen my marbles?' },
-        {
-          id: 2,
-          username: 'Anonymous',
-          content:
-            'No, I think you lost them. You lost your marbles Bob. You lost them for good.'
-        }
-      ],
+      messages: [],
       loading: true,
       userInput: '',
-      currentUser: { name: 'Bob' }
+      currentUser: { name: '' }
     };
-    this.onSubmitHandler = this.onSubmitHandler.bind(this);
+    //this.socket = new WebSocket('ws://localhost:3001');
+    //this.socket.on('message', () => console.log('received mess'));
+    //this.socket = new WebSocket('ws://localhost:3001');
+    this.addCurrentUserHandler = this.addCurrentUserHandler.bind(this);
+    this.addMessageHandler = this.addMessageHandler.bind(this);
     this.onChangeHandler = this.onChangeHandler.bind(this);
   }
+
+  addCurrentUserHandler(e) {
+    console.log(e.target.value);
+    const currentUser = e.target.value || 'UNKNOWN USER';
+    const newUser = { ...this.state.currentUser, name: currentUser };
+    if (e.keyCode === 13) {
+      this.setState({ currentUser: newUser });
+      let newMessage = {
+        //id: e.target.value,
+        type: 'postNotification',
+        content: e.target.value,
+        username: this.state.currentUser.name
+      };
+    }
+  }
+
   onUserComment(text) {
     this.setState({ userInput: text });
   }
@@ -31,37 +43,56 @@ class App extends Component {
     let input = e.target.value;
     this.onUserComment(input);
   }
-  onSubmitHandler(e) {
+
+  addMessageHandler(e) {
     if (e.keyCode === 13 && e.target.value.length) {
-      console.log('STATE:', this.state.userInput);
       let newMessage = {
-        id: e.target.value,
+        //id: e.target.value,
+        type: 'postMessage',
         content: e.target.value,
         username: this.state.currentUser.name
       };
       let newMessages = [...this.state.messages, newMessage];
-      this.setState({ messages: newMessages });
+      //this.setState({ messages: newMessages });
+      //this.socket.onopen = function(event) {
+      this.socket.send(JSON.stringify(newMessage));
+      //};
       e.target.value = '';
     }
   }
 
   componentDidMount() {
     console.log('componentDidMount <App />');
-    setTimeout(() => {
-      console.log('Simulating incoming message');
-      // Add a new message to the list of messages in the data store
-      const newMessage = {
-        id: 3,
-        username: 'Michelle',
-        content: 'Hello there!'
-      };
-      const messages = this.state.messages.concat(newMessage);
-      // Update the state of the app component.
-      // Calling setState will trigger a call to render() in App and all child components.
-      this.setState({ messages: messages });
-    }, 3000);
+    this.socket = new WebSocket('ws://localhost:3001');
+    this.socket.onopen = event => {
+      console.log('Connected to server');
+    };
+
+    this.socket.onmessage = e => {
+      console.log(event);
+      // The socket event data is encoded as a JSON string.
+      // This line turns it into an object
+      const data = JSON.parse(event.data);
+      switch (data.type) {
+        case 'incomingMessage':
+          // handle incoming message
+          break;
+        case 'incomingNotification':
+          // handle incoming notification
+          break;
+        default:
+          // show an error in the console if the message type is unknown
+          throw new Error('Unknown event type ' + data.type);
+      }
+
+      console.log('DATA RECIEVED FROM SERVER :', JSON.parse(e.data));
+      let messageRecieved = JSON.parse(e.data);
+      let newMessages = [...this.state.messages, messageRecieved];
+      this.setState({ messages: newMessages });
+    };
   }
   render() {
+    console.log('COMPONENT IS LOADED');
     return (
       <div>
         <Nav />
@@ -70,7 +101,8 @@ class App extends Component {
           currentUser={this.state.currentUser.name}
           userInput={this.state.userInput}
           onChangeHandler={this.onChangeHandler}
-          onSubmitHandler={this.onSubmitHandler}
+          addMessageHandler={this.addMessageHandler}
+          addCurrentUserHandler={this.addCurrentUserHandler}
         />
       </div>
     );

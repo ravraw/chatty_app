@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 export default class ChatBar extends Component {
   render() {
-    console.log('componentDidMount <ChatBar />');
+    // console.log('componentDidMount <ChatBar />');
     return (
       <footer className="chatbar">
         <input
@@ -10,6 +10,7 @@ export default class ChatBar extends Component {
           className="chatbar-username"
           defaultValue={this.props.currentUser}
           placeholder="Your Name (Optional)"
+          onKeyUp={e => this.props.addCurrentUserHandler(e)}
         />
         <input
           name="content"
@@ -17,7 +18,7 @@ export default class ChatBar extends Component {
           placeholder="Type a message and hit ENTER"
           defaultValue={this.props.userInput}
           onChange={e => this.props.onChangeHandler(e)}
-          onKeyUp={e => this.props.onSubmitHandler(e)}
+          onKeyUp={e => this.props.addMessageHandler(e)}
         />
       </footer>
     );
