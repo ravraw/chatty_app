@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function Nav() {
+export default function Nav(props) {
   //console.log('componentDidMount <NavBar />');
   return (
     <div>
@@ -8,6 +8,7 @@ export default function Nav() {
         <a href="/" className="navbar-brand">
           Chatty
         </a>
+        <p className="navbar-count">{props.count} users online</p>
       </nav>
     </div>
   );

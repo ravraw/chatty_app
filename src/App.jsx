@@ -11,7 +11,8 @@ class App extends Component {
       notifications: [],
       loading: true,
       userInput: '',
-      currentUser: { name: '' }
+      currentUser: { name: '' },
+      clientCount: ''
     };
 
     this.addCurrentUserHandler = this.addCurrentUserHandler.bind(this);
@@ -87,22 +88,23 @@ class App extends Component {
           let newNotifications = [...this.state.notifications, data];
           this.setState({ notifications: newNotifications });
           break;
+        case 'clientCount':
+          // handle incoming clinet Count
+          //let newNotifications = [...this.state.notifications, data];
+          console.log(data.count);
+          this.setState({ clientCount: data.count });
+          break;
         default:
           // show an error in the console if the message type is unknown
           throw new Error('Unknown event type ' + data.type);
       }
-
-      // console.log('DATA RECIEVED FROM SERVER :', JSON.parse(e.data));
-      // //let messageRecieved = JSON.parse(e.data);
-      // let newMessages = [...this.state.messages, messageRecieved];
-      // this.setState({ messages: newMessages });
     };
   }
   render() {
     console.log('COMPONENT IS LOADED');
     return (
       <div>
-        <Nav />
+        <Nav count={this.state.clientCount} />
         <MessageList
           messages={this.state.messages}
           notifications={this.state.notifications}

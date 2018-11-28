@@ -24,9 +24,18 @@ const wss = new SocketServer({ server });
 wss.on('connection', ws => {
   console.log('One more ---------Client connected');
 
-  ws.on('open', function open() {
-    ws.send('One more client connected !!!');
+  //ws.on('open', function open() {
+  console.log('working');
+  wss.clients.forEach(function e(client) {
+    // if (client != ws) {
+    client.send(
+      JSON.stringify({
+        type: 'clientCount',
+        count: wss.clients.size
+      })
+    );
   });
+  //});
 
   ws.on('message', function incoming(message) {
     const { type, username, content, createdAt } = JSON.parse(message);
@@ -38,6 +47,7 @@ wss.on('connection', ws => {
         content,
         createdAt
       };
+      client.send(wss.clients.size);
       wss.clients.forEach(function e(client) {
         // if (client != ws) {
         client.send(JSON.stringify(returnMessage));
@@ -57,8 +67,26 @@ wss.on('connection', ws => {
         //}
       });
     }
+
+    // wss.clients.forEach(function e(client) {
+    //   client.send(
+    //     JSON.stringify({ type: 'clientCount', count: wss.clients.size })
+    //   );
+    // });
   });
 
   // Set up a callback for when a client closes the socket. This usually means they closed their browser.
-  ws.on('close', () => console.log('Client disconnected'));
+  ws.on('close', () => {
+    console.log('Client disconnected');
+    //console.log('WSS CONNECTED CLIENTS FROM CLOSE:', wss.clients.size);
+    wss.clients.forEach(function e(client) {
+      // if (client != ws) {
+      client.send(
+        JSON.stringify({
+          type: 'clientCount',
+          count: wss.clients.size
+        })
+      );
+    });
+  });
 });
