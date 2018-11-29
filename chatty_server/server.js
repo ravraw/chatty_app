@@ -75,11 +75,9 @@ wss.on('connection', ws => {
         imgURL,
         createdAt
       };
-      //client.send(wss.clients.size);
+
       wss.clients.forEach(function e(client) {
-        // if (client != ws) {
         client.send(JSON.stringify(returnMessage));
-        //}
       });
     }
     if (type === 'postNotification') {
@@ -91,9 +89,7 @@ wss.on('connection', ws => {
         createdAt
       };
       wss.clients.forEach(function e(client) {
-        // if (client != ws) {
         client.send(JSON.stringify(returnMessage));
-        //}
       });
     }
   });
@@ -102,7 +98,6 @@ wss.on('connection', ws => {
   ws.on('close', () => {
     console.log('Client disconnected');
     wss.clients.forEach(function e(client) {
-      // if (client != ws) {
       client.send(
         JSON.stringify({
           type: 'clientCount',

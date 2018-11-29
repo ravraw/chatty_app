@@ -15,17 +15,14 @@ class App extends Component {
       clientCount: '',
       userColor: ''
     };
-
     this.addCurrentUserHandler = this.addCurrentUserHandler.bind(this);
     this.addMessageHandler = this.addMessageHandler.bind(this);
     this.onChangeHandler = this.onChangeHandler.bind(this);
   }
 
   addCurrentUserHandler(e) {
-    console.log(e.target.value);
     const oldUser = this.state.currentUser.name || 'Anonymous';
     const newUser = e.target.value || 'Anonymous';
-    console.log('NEW USER:', newUser);
     const updatedUser = { ...this.new, name: newUser };
     if (e.keyCode === 13) {
       this.setState({ currentUser: updatedUser });
@@ -36,13 +33,14 @@ class App extends Component {
         createdAt: new Date().getTime()
       };
       this.socket.send(JSON.stringify(newNotification));
+      document.querySelector('.chatbar-message').focus();
     }
   }
-
+  // remove starting and ending quotes from a string
   replaceQuotes(str) {
     return str.replace(/(^["|'])+|(["|']+$)/g, '');
   }
-
+  // extract image URL from a string
   getURL(str) {
     let splitArray = str.split(' ');
     let userContent = '';
@@ -93,7 +91,6 @@ class App extends Component {
     };
 
     this.socket.onmessage = e => {
-      console.log(event);
       // The socket event data is encoded as a JSON string.
       // This line turns it into an object
       const data = JSON.parse(event.data);
@@ -103,7 +100,6 @@ class App extends Component {
           // handle incoming message
           let newMessages = [...this.state.messages, data];
           this.setState({ messages: newMessages });
-          //newMessage = {};
           break;
         case 'incomingNotification':
           // handle incoming notification
@@ -112,14 +108,10 @@ class App extends Component {
           break;
         case 'clientCount':
           // handle incoming clinet Count
-          //let newNotifications = [...this.state.notifications, data];
-          console.log(data.count);
           this.setState({ clientCount: data.count });
           break;
         case 'userColor':
-          // handle incoming clinet Count
-          //let newNotifications = [...this.state.notifications, data];
-          console.log(data.color);
+          // handle incoming assigned  user text color
           this.setState({ userColor: data.color });
           break;
         default:
