@@ -23,8 +23,8 @@ class App extends Component {
 
   addCurrentUserHandler(e) {
     console.log(e.target.value);
-    const oldUser = this.state.currentUser.name || 'Anonymous User';
-    const newUser = e.target.value || 'Anonymous User';
+    const oldUser = this.state.currentUser.name || 'Anonymous';
+    const newUser = e.target.value || 'Anonymous';
     console.log('NEW USER:', newUser);
     const updatedUser = { ...this.new, name: newUser };
     if (e.keyCode === 13) {
@@ -75,7 +75,7 @@ class App extends Component {
         content:
           this.getURL(this.replaceQuotes(e.target.value)).userContent || '',
         imgURL: this.getURL(this.replaceQuotes(e.target.value)).url || '',
-        username: this.state.currentUser.name || 'Anonymous User',
+        username: this.state.currentUser.name || 'Anonymous',
         userColor: this.state.userColor,
         createdAt: new Date().getTime()
       };
