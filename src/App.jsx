@@ -71,7 +71,6 @@ class App extends Component {
   addMessageHandler(e) {
     if (e.keyCode === 13 && e.target.value.length) {
       let newMessage = {
-        //id: e.target.value,
         type: 'postMessage',
         content:
           this.getURL(this.replaceQuotes(e.target.value)).userContent || '',
@@ -81,10 +80,7 @@ class App extends Component {
         createdAt: new Date().getTime()
       };
       let newMessages = [...this.state.messages, newMessage];
-      //this.setState({ messages: newMessages });
-      //this.socket.onopen = function(event) {
       this.socket.send(JSON.stringify(newMessage));
-      //};
       e.target.value = '';
     }
   }

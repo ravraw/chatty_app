@@ -1,7 +1,6 @@
 import React from 'react';
 
 export default function Message(props) {
-  //console.log('componentDidMount <Message />');
   let { userColor } = props;
   let image = props.imgURL ? (
     <img className="message__img" src={props.imgURL} alt="some-image" />

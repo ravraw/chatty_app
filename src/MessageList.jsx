@@ -7,7 +7,6 @@ export default class MessageList extends Component {
     const { notifications, messages } = this.props;
     const combined = [...messages, ...notifications];
     const sorted = combined.sort((a, b) => b.createdAt - a.createdAt);
-    //const messages = this.props.messages;
     const messagesAndNotifications = sorted.map(message => {
       if (message.type === 'incomingMessage')
         return (

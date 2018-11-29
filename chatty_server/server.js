@@ -37,7 +37,6 @@ wss.on('connection', ws => {
 
   //ws.on('open', function open() {
   wss.clients.forEach(function e(client) {
-    //const randomColor =
     if (client == ws) {
       client.send(
         JSON.stringify({ type: 'userColor', color: `${getRandomColor()}` })
@@ -97,18 +96,11 @@ wss.on('connection', ws => {
         //}
       });
     }
-
-    // wss.clients.forEach(function e(client) {
-    //   client.send(
-    //     JSON.stringify({ type: 'clientCount', count: wss.clients.size })
-    //   );
-    // });
   });
 
   // Set up a callback for when a client closes the socket. This usually means they closed their browser.
   ws.on('close', () => {
     console.log('Client disconnected');
-    //console.log('WSS CONNECTED CLIENTS FROM CLOSE:', wss.clients.size);
     wss.clients.forEach(function e(client) {
       // if (client != ws) {
       client.send(

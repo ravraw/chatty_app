@@ -1,7 +1,6 @@
 import React from 'react';
 
 export default function Nav(props) {
-  //console.log('componentDidMount <NavBar />');
   return (
     <div>
       <nav className="navbar">
