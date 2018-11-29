@@ -58,9 +58,14 @@ wss.on('connection', ws => {
   //});
 
   ws.on('message', function incoming(message) {
-    const { type, username, content, userColor, createdAt } = JSON.parse(
-      message
-    );
+    const {
+      type,
+      username,
+      content,
+      userColor,
+      imgURL,
+      createdAt
+    } = JSON.parse(message);
     if (type === 'postMessage') {
       let returnMessage = {
         id: uuidv1(),
@@ -68,6 +73,7 @@ wss.on('connection', ws => {
         username,
         content,
         userColor,
+        imgURL,
         createdAt
       };
       //client.send(wss.clients.size);

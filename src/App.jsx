@@ -39,6 +39,26 @@ class App extends Component {
     }
   }
 
+  replaceQuotes(str) {
+    return str.replace(/(^["|'])+|(["|']+$)/g, '');
+  }
+
+  getURL(str) {
+    let splitArray = str.split(' ');
+    let userContent = '';
+    let url;
+    splitArray.forEach(el => {
+      if (/(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)/.test(el)) {
+        url = el;
+      } else if (/(http(s?):)([/|.|\w|\s|-])*/.test(el)) {
+        userContent += `    ***** IMAGE NOT FOUND - LINK BROKEN ****   `;
+      } else {
+        userContent += ` ${el}`;
+      }
+    });
+    return { url, userContent };
+  }
+
   onUserComment(text) {
     this.setState({ userInput: text });
   }
@@ -53,7 +73,9 @@ class App extends Component {
       let newMessage = {
         //id: e.target.value,
         type: 'postMessage',
-        content: e.target.value,
+        content:
+          this.getURL(this.replaceQuotes(e.target.value)).userContent || '',
+        imgURL: this.getURL(this.replaceQuotes(e.target.value)).url || '',
         username: this.state.currentUser.name || 'Anonymous User',
         userColor: this.state.userColor,
         createdAt: new Date().getTime()

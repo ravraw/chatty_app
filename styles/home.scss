@@ -46,7 +46,14 @@ body {
   display: flex;
   padding: 5px;
 }
-
+.message__content {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+}
+.message__img {
+  width: 50vw;
+}
 .message.system {
   font-style: italic;
   padding: 5px 20px;

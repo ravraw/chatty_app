@@ -15,6 +15,7 @@ export default class MessageList extends Component {
             key={message.id}
             username={message.username}
             content={message.content.toLowerCase()}
+            imgURL={message.imgURL}
             userColor={message.userColor}
           />
         );
